@@ -39,15 +39,15 @@ export function Circle(props) {
   const golds = ["#c69402", "#d6a412", "#e6b422", "#f6c432", "#FFFFFF"];
 
   const data = {
-    labels: [props.name[0], props.name[1], props.name[2], props.name[3]],
+    labels: [props.name[0], props.name[1], props.name[2], props.name[3],"残り"],
     datasets: [
       {
         data: [
-          props.data[0],
-          props.data[1],
-          props.data[2],
-          props.data[3],
-          props.data[4] -
+          props.data[0]+"[km]",
+          props.data[1]+"[km]",
+          props.data[2]+"[km]",
+          props.data[3]+"[km]",
+          props.data[4] -+"[km]"
             (props.data[0] + props.data[1] + props.data[2] + props.data[3])
         ],
         backgroundColor: under100 ? colors : golds,
