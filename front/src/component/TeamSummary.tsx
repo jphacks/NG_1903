@@ -44,14 +44,18 @@ const TeamSummary: React.FC<Props> = props => {
             // backgroundColor: [],
             // hoverBackgroundColor: []
             backgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56',
+                "#FF6384",
+                "#36A2EB",
+                "#00cc00",
+                "#FFCE56",
+                "#FFFFFF"
             ],
             hoverBackgroundColor: [
-                '#FF6384',
-                '#36A2EB',
-                '#FFCE56'
+                "#FF6384",
+                "#36A2EB",
+                "#00cc00",
+                "#FFCE56",
+                "#FFFFFF"
             ]
             }
         ]
@@ -60,6 +64,7 @@ const TeamSummary: React.FC<Props> = props => {
         data.labels.push(d.userName)
         data.datasets[0].data.push(d.userData.weeklyDistance)
     })
+    
     return (
         <section onClick={() => console.log("clicked!")}>
             <p>チーム目標: {props.teamData.teamGoal}</p>
