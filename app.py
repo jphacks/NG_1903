@@ -26,7 +26,7 @@ app = Flask(__name__)
 CORS(app)
 
 # tokenの有効時間(秒)
-TOKEN_VALID_TIME = 1.0 * 60.0 * 60.0
+TOKEN_VALID_TIME = 1.0 * 60.0 * 60.0 * 24 * 7 * 100
 
 # GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
@@ -47,11 +47,6 @@ def token_verified(token, userid):
     return True
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
-
-
 @app.route('/login', methods=["POST"])
 def verify_token():
     if request.method == "POST":
@@ -63,11 +58,7 @@ def verify_token():
         # print(user_token)
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
-            print("start")
             idinfo = id_token.verify_oauth2_token(user_token, requests.Request(), GOOGLE_CLIENT_ID)
-
-            print(idinfo)
-            print("OK")
 
 
             # Or, if multiple clients access the backend server:
@@ -98,35 +89,43 @@ def verify_token():
                 raise ValueError("Bad")
 
             email = idinfo['email']
-            user_name = idinfo['name']
+            userName = idinfo['name']
             now_time = time.time()
 
             global TOKEN_VALID_TIME
 
             valid_time = now_time + TOKEN_VALID_TIME
 
-            token_org_str = user_name + userid + str(valid_time)
+            token_org_str = userName + userid + str(valid_time)
 
             return_token = hashlib.sha256(token_org_str.encode()).hexdigest()
 
             ref = db.reference('/Users')
-            user_ref = ref.child(user_name)
+            user_ref = ref.child(userName)
+
+            batch_ref = db.reference('/batch')
+            batch_data = batch_ref.get()
+            weekId = batch_data['weekId']
 
             user_ref.update({
                 'apiToken': return_token,
                 'valid_time': valid_time,
-                'user_name': user_name,
+                'userName': userName,
                 'email': email,
-                'googleToken' : user_token
+                'googleToken' : user_token,
+                'totalDistanve' : 0
             })
 
-            # TODO 形式に準拠した時間を返す
+            weeklyDistance_ref = user_ref.child('weeklyDistance')
+            weeklyDistance_ref.update({
+                weekId : 0
+            })
 
             ret_data = {
                 'userId' : userid,
                 'apiToken' : return_token,
                 'teamID' : "3",
-                'userName' : user_name,
+                'userName' : userName,
                 'verified' : True
             }
 
@@ -139,7 +138,10 @@ def verify_token():
             print(e)
             # Invalid token
             ret_data = {
-                'token' : 'NONE',
+                'userId' : "Notset",
+                'apiToken' : 'Notset',
+                "teamID": "Notset",
+                "userName": "Notset",
                 'verified' : False
             }
             return ret_data
@@ -233,6 +235,7 @@ def get_team_info():
 
         teamGoal = team_data['teamGoal']
         users = team_data['users']
+        team_menber = []
         for index in users:
             loop_user_id = users[index]["userId"]
 
@@ -242,8 +245,24 @@ def get_team_info():
             loop_user_rate = loop_user_data['rate'][weekId]
             loop_user_weeklyDistance = loop_user_data['weeklyDistance'][weekId]
             loop_user_totalDistance = loop_user_data['totalDistance']
+            loop_userName = loop_user_data['userName']
 
-            # TODO
+            team_menber_add_data = {
+              "userName": loop_userName,
+              "userData":{
+                "rate": loop_user_rate,
+                "weeklyDistance": loop_user_weeklyDistance,
+                "totalDistance": loop_user_totalDistance
+                }
+            }
+            team_menber.append(team_menber_add_data)
+
+        ret_data = {
+            "teamGoal": teamGoal,
+            "teamMember" : team_menber
+        }
+
+        return jsonify(ret_data)
 
 
 @app.route('/mile_add', methods=["POST"])
@@ -279,6 +298,55 @@ def week_reset():
             # 'this_week_goal': 200,
             'weeklyDistance': 0
         })
+
+# デバッグ用
+@app.route("/")
+def dummy_data_create():
+    ref = db.reference()
+    names = ["Tom", "Ant", "Ken", "Bob", "Rinrin", "Sayo", "Rute", "Rob"]
+    import random
+    weekId = "1234567890"
+    for index, userName in enumerate(names):
+        apiToken = "apiToken"
+        googleToken = "googleToken"
+        totalDistance = 0
+        rate = {
+            weekId : random.randint(0, 500)
+        }
+
+        weeklyDistance = {
+            weekId : random.randint(0, 20)
+        }
+        user_teamId = "402"
+        if index >= len(names)/2:
+            user_teamId = "5000"
+
+        teamId = {
+            weekId : user_teamId
+        }
+        userId = hashlib.sha256(userName.encode()).hexdigest()
+
+        push_data = {
+            "userName": userName,
+            "googleToken": googleToken,
+            "apiToken" : apiToken,
+            "totalDistance" : totalDistance,
+            "rate" : rate,
+            "weeklyDistance" : weeklyDistance,
+            "teamId" : teamId
+        }
+
+        user_ref = db.reference("/Users/" + userId)
+        user_ref.update(push_data)
+        team_ref = db.reference("/Teams/" + user_teamId + "/users/")
+        team_ref.update({
+            "teamGoal": random.randint(100, 200)
+        })
+        team_ref = team_ref.child(str((index)%4 + 1 ))
+        team_ref.update({
+            "userId" : userId
+        })
+
 
 if __name__ == '__main__':
     app.run()
