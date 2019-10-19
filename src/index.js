@@ -6,7 +6,10 @@ import "./styles.css";
 function App() {
   return (
     <div className="App">
-      <Circle data={[100, 300, 500, 1100, 2000]} />
+      <Circle
+        name={["koki", "koki", "koki", "koki", "target"]}
+        data={[300, 300, 500, 1100, 2000]}
+      />
     </div>
   );
 }
