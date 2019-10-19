@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request, redirect
 import json
 import time
+import datetime, pytz
 import os
 from google.auth.transport import requests
 import hashlib
@@ -50,12 +51,7 @@ def token_verified(token, userid):
 @app.route('/login', methods=["POST"])
 def verify_token():
     if request.method == "POST":
-        # print(request.form)
-        # print('body: {}'.format(request.get_data()))
         user_token = json.loads(request.get_data())['token']
-        # print(tmp)
-        # user_token = request.form["token"]
-        # print(user_token)
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
             idinfo = id_token.verify_oauth2_token(user_token, requests.Request(), GOOGLE_CLIENT_ID)
@@ -112,14 +108,25 @@ def verify_token():
                 'valid_time': valid_time,
                 'userName': userName,
                 'email': email,
-                'googleToken' : user_token,
-                'totalDistanve' : 0
+                'googleToken' : user_token
             })
 
+            if 'totalDistance' not in user_ref.get():
+                user_ref.update({
+                    'totalDistance' : 0
+                })
+
+            if 'before_pull_time' not in user_ref.get():
+                default_push_time = nowtime_to_rcf3339()
+                user_ref.update({
+                    'before_pull_time': default_push_time
+                })
+
             weeklyDistance_ref = user_ref.child('weeklyDistance')
-            weeklyDistance_ref.update({
-                weekId : 0
-            })
+            if weekId not in weeklyDistance_ref.get():
+                weeklyDistance_ref.update({
+                    weekId : 0
+                })
 
             ret_data = {
                 'userId' : userid,
@@ -157,8 +164,9 @@ def get_user_info():
             }
 
     if request.method == 'POST':
-        token = request.form['apiToken']
-        userid = request.form['userId']
+        posted_json = json.loads(request.get_data())
+        token = posted_json['apiToken']
+        userid = posted_json['userId']
 
         if not token_verified(token=token, userid=userid):
             return ret_data
@@ -210,8 +218,9 @@ def get_team_info():
     }
 
     if request.method == "POST":
-        token = request.form['apiToken']
-        userid = request.form['userId']
+        posted_json = json.loads(request.get_data())
+        token = posted_json['apiToken']
+        userid = posted_json['userId']
 
         if not token_verified(token=token, userid=userid):
             return ret_data
@@ -265,39 +274,20 @@ def get_team_info():
         return jsonify(ret_data)
 
 
-@app.route('/mile_add', methods=["POST"])
-def user_mile_add():
-    if request.method == "POST":
-        ref = db.reference('/Users/lock')
-        user_data = ref.get()
-        if not user_data:
-            return "None_Users_Data"
-        totalDistance = user_data["totalDistance"]
-        totalDistance += 100
-        this_week_mileage = user_data["weeklyDistance"]
-        this_week_mileage += 50
+# google fit とかでデータを更新した時に呼んで欲しい関数
+# 最後にデータを送信した時間を更新します
+def push_data_time_update(userId):
+    user_ref = db.reference('/Users/' + userId)
+    user_ref.update({
+        "before_pull_time" : nowtime_to_rcf3339()
+    })
 
-        ret_data = {
-            "totalDistance" : totalDistance
-        }
-        ref.update(ret_data)
-        return jsonify(ret_data)
 
-    ret_data = {
-
-    }
-    return ret_data
-
-def week_reset():
-    ref = db.reference('/Users')
-    ref_data = ref.get()
-    for user in ref_data:
-        print(user)
-        user_ref = ref.child(user)
-        user_ref.update({
-            # 'this_week_goal': 200,
-            'weeklyDistance': 0
-        })
+# 今の所タイムゾーンは全て日本
+def nowtime_to_rcf3339():
+    dt = datetime.datetime.now(tz=pytz.timezone('Japan'))
+    ret_str = dt.strftime('%Y/%m/%dT%H:%M:%S%z')
+    return ret_str
 
 # デバッグ用
 @app.route("/")
@@ -333,7 +323,8 @@ def dummy_data_create():
             "totalDistance" : totalDistance,
             "rate" : rate,
             "weeklyDistance" : weeklyDistance,
-            "teamId" : teamId
+            "teamId" : teamId,
+            "before_pull_time" : nowtime_to_rcf3339()
         }
 
         user_ref = db.reference("/Users/" + userId)
@@ -346,6 +337,8 @@ def dummy_data_create():
         team_ref.update({
             "userId" : userId
         })
+
+    return "OK"
 
 
 if __name__ == '__main__':
