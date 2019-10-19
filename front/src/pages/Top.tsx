@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AppState } from '../store';
 import { UserData, teamDetail } from '../types';
 import UserCard from '../component/UserCard';
-import TeamSummary from '../component/TeamSummary';
+import TeamCard from '../component/TeamCard';
 import WeeklySummary from '../component/weeklySummary';
 
 const userData: UserData = {
@@ -62,13 +62,12 @@ const Index : React.FC = () => {
 
     return (
         <div>
-            <WeeklySummary/>
             <header>
-                <p>{userState.userName? userState.userName: 'Not logged in'}</p>
-                <p>Setting</p>
+                <WeeklySummary/>
             </header>
             {isUserLoaded ?  <UserCard userData={userData} /> :  <div>User Loading</div>}
-            {isTeamLoaded ?  <TeamSummary teamData={teamData}  /> : <div>Team Loaded</div>}
+            <p　className="mb-2 text-muted">チームレポート</p>
+            {isTeamLoaded ?  <TeamCard teamData={teamData}  /> : <div>Team Loaded</div>}
         </div>
     )
 }
