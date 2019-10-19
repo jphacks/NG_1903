@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request, redirect
 import json
 import time
 import os
-import requests
+from google.auth.transport import requests
 import hashlib
 from google.oauth2 import id_token
 from flask_cors import CORS
@@ -29,7 +29,7 @@ CORS(app)
 TOKEN_VALID_TIME = 1.0 * 60.0 * 60.0
 
 # GOOGLE_CLIENT_ID
-GOOGLE_CLIENT_ID = 'http://142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com/'
+GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
 
 
 
@@ -55,12 +55,19 @@ def hello_world():
 @app.route('/login', methods=["POST"])
 def verify_token():
     if request.method == "POST":
-        print(request.form)
-        user_token = request.form["token"]
-        print(user_token)
+        # print(request.form)
+        # print('body: {}'.format(request.get_data()))
+        user_token = json.loads(request.get_data())['token']
+        # print(tmp)
+        # user_token = request.form["token"]
+        # print(user_token)
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
+            print("start")
             idinfo = id_token.verify_oauth2_token(user_token, requests.Request(), GOOGLE_CLIENT_ID)
+
+            print(idinfo)
+            print("OK")
 
 
             # Or, if multiple clients access the backend server:
@@ -105,29 +112,31 @@ def verify_token():
             ref = db.reference('/Users')
             user_ref = ref.child(user_name)
 
-            before_login_time = user_ref.get()["before_login_time"]
-
             user_ref.update({
                 'apiToken': return_token,
                 'valid_time': valid_time,
                 'user_name': user_name,
                 'email': email,
-                'before_login_time' : now_time,
                 'googleToken' : user_token
             })
 
             # TODO 形式に準拠した時間を返す
 
             ret_data = {
-                'token' : return_token,
-                'verified' : True,
-                'before_login_time' : before_login_time
+                'userId' : userid,
+                'apiToken' : return_token,
+                'teamID' : "3",
+                'userName' : user_name,
+                'verified' : True
             }
 
-            return ret_data
+            print(ret_data)
+
+            return jsonify(ret_data)
 
 
-        except ValueError:
+        except Exception as e:
+            print(e)
             # Invalid token
             ret_data = {
                 'token' : 'NONE',
