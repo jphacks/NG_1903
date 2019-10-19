@@ -4,6 +4,7 @@ import { AppState } from '../store';
 import { UserData, teamDetail } from '../types';
 import UserCard from '../component/UserCard';
 import TeamSummary from '../component/TeamSummary';
+import WeeklySummary from '../component/weeklySummary';
 
 const userData: UserData = {
     "rate": 560,
@@ -61,6 +62,7 @@ const Index : React.FC = () => {
 
     return (
         <div>
+            <WeeklySummary/>
             <header>
                 <p>{userState.userName? userState.userName: 'Not logged in'}</p>
                 <p>Setting</p>
