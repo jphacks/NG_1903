@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import Top from "./pages/Top";
-import "./App.css";
 import { Provider } from "react-redux";
 import  Store  from './store'
+import Top from "./pages/Top";
+import Login from "./pages/Login"
+
 
 const App: React.FC = () => {
   return (
@@ -11,6 +12,7 @@ const App: React.FC = () => {
       <BrowserRouter>
         <div>
           <Route exact path="/" component={Top} />
+          <Route path="/login" component={Login} />
         </div>
       </BrowserRouter>
     </Provider>
