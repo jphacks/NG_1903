@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import  Store  from './store'
 import Top from "./pages/Top";
 import Login from "./pages/Login"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const App: React.FC = () => {

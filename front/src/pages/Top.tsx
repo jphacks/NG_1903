@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { AppState } from '../store';
 import { UserData, teamDetail } from '../types';
-import UserSummary from '../component/UserSummary';
+import UserCard from '../component/UserCard';
 import TeamSummary from '../component/TeamSummary';
 
 const userData: UserData = {
@@ -65,9 +65,8 @@ const Index : React.FC = () => {
                 <p>{userState.userName? userState.userName: 'Not logged in'}</p>
                 <p>Setting</p>
             </header>
-            {isUserLoaded ?  <UserSummary userData={userData} /> :  <div>User Loading</div>}
+            {isUserLoaded ?  <UserCard userData={userData} /> :  <div>User Loading</div>}
             {isTeamLoaded ?  <TeamSummary teamData={teamData}  /> : <div>Team Loaded</div>}
-            
         </div>
     )
 }
