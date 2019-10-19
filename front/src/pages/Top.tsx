@@ -7,7 +7,7 @@ import UserCard from '../component/UserCard';
 import TeamCard from '../component/TeamCard';
 import WeeklySummary from '../component/weeklySummary';
 
-const URL = 'https://mock.onsd.now.sh'
+const URL = 'https://localhost:5000'
 const Index : React.FC = () => {
 
     const [isUserLoading, setIsUserLoading] = useState<boolean>(true)

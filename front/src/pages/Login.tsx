@@ -18,8 +18,8 @@ const Login: React.FC = () => {
 
     const onSuccess = (response:any) => {
         console.log(response);
-        // axios.post(URL + '/login', {token: response.accessToken}).then(
-        axios.get(URL + '/login').then(
+        axios.post(URL + '/login', {token: response.tokenObj.id_token}).then(
+        //axios.get(URL + '/login').then(
             res => {
                 login(res.data as UserState)
             }
@@ -37,7 +37,7 @@ const Login: React.FC = () => {
                 Nice Run Club
             </div>
             <GoogleLogin
-                clientId="433618952640-37ar21n8s7m5fhn728f23vjap40kou9s.apps.googleusercontent.com"
+                clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
                 buttonText="Sign in With Google"
                 onSuccess={onSuccess}
                 onFailure={err => console.error(err)}
