@@ -1,64 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { AppState } from '../store';
-import { UserData, teamDetail } from '../types';
+import { UserData, TeamDetail } from '../types';
 import UserCard from '../component/UserCard';
 import TeamSummary from '../component/TeamSummary';
 import WeeklySummary from '../component/weeklySummary';
 
-const userData: UserData = {
-    "rate": 560,
-    "weeklyDistance": 25.12,
-    "totalDistance": 125,
-    "achievementRate": 80
-}
-const teamData: teamDetail = {
-    teamGoal: 200,
-    teamMember: [
-        {
-            userName: "AAA",
-            userData: {
-                "rate": 560,
-                "weeklyDistance": 13,
-                "totalDistance": 125,
-                "achievementRate": 80
-            }
-        },
-        {
-            userName: "BBB",
-            userData: {
-                "rate": 560,
-                "weeklyDistance": 30,
-                "totalDistance": 125,
-                "achievementRate": 80
-            }
-        },
-        {
-            userName: "CCC",
-            userData: {
-                "rate": 560,
-                "weeklyDistance": 50,
-                "totalDistance": 125,
-                "achievementRate": 80
-            }
-        },
-        {
-            userName: "DDD",
-            userData: {
-                "rate": 560,
-                "weeklyDistance": 25.12,
-                "totalDistance": 125,
-                "achievementRate": 80
-            }
-        }
-    ]
-}
-
+const URL = 'https://mock.onsd.now.sh'
 const Index : React.FC = () => {
-    const [isUserLoaded, setIsUserLoaded] = useState<boolean>(true)
-    const [isTeamLoaded, setIsTeadLoaded] = useState<boolean>(true)
+
+    const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
+    const [userData, setUserData] = useState<UserData>({rate:0, weeklyDistance:0,totalDistance:0,achievementRate:0})
+
+    const [isTeamLoading, setIsTeamLoading] = useState<boolean>(true)
+    const [teamData, setTeamData] = useState<TeamDetail>({
+        teamGoal: 0,
+        teamMember: [
+            {
+                userName: "",
+                userData: {
+                    "rate": 0,
+                    "weeklyDistance": 0,
+                    "totalDistance": 0,
+                    "achievementRate": 0
+                }
+            }
+        ]
+    })
 
     const userState = useSelector((state: AppState) => state.userState)
+    console.log(userState)
+    useEffect(() => {
+        console.log(userState.userId)
+       axios.get(URL + '/user/' + userState.userId).then(res => {
+           const userData = res.data as UserData
+           setUserData(userData)
+       }).then(
+           () => setIsUserLoading(false)
+        ).catch(() => setIsUserLoading(true))
+    }, [userState])
+
+    useEffect( () => {
+        console.log(userState.teamID)
+        axios.get(URL + '/team/'　+ userState.teamID).then(res => {
+            const teamData = res.data as TeamDetail
+            setTeamData(teamData)
+        }).then(
+            () => setIsTeamLoading(false)
+        ).catch(
+            () => setIsUserLoading(true)
+        )
+    }, [userState])
 
     return (
         <div>
@@ -67,8 +60,8 @@ const Index : React.FC = () => {
                 <p>{userState.userName? userState.userName: 'Not logged in'}</p>
                 <p>Setting</p>
             </header>
-            {isUserLoaded ?  <UserCard userData={userData} /> :  <div>User Loading</div>}
-            {isTeamLoaded ?  <TeamSummary teamData={teamData}  /> : <div>Team Loaded</div>}
+            {isUserLoading ?  <div>User Loading</div> : <UserCard userData={userData} /> }
+            {isTeamLoading ?  <div>Team Loading</div> : <TeamSummary teamData={teamData}  /> }
         </div>
     )
 }

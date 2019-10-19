@@ -2,7 +2,7 @@ export type UserState = {
     userId: string;
     userName : string;
     teamID: string;
-    apiToken: string;
+    apiToken: any; //FIX
 }
 
 export type UserData = {
@@ -11,12 +11,12 @@ export type UserData = {
     totalDistance: number
     achievementRate: number
 }
-export type teamDetail = {
+export type TeamDetail = {
     teamGoal: number
-    teamMember : teamMemberData[]
+    teamMember : TeamMemberData[]
 }
 
-export type teamMemberData = {
+export type TeamMemberData = {
     userName: string,
     userData: UserData
 }

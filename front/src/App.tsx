@@ -6,6 +6,7 @@ import Top from "./pages/Top";
 import Login from "./pages/Login"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+export const URL = 'https://mock.onsd.now.sh'
 
 const App: React.FC = () => {
   return (

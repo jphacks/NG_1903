@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {  teamDetail } from '../types';
+import {  TeamDetail } from '../types';
 import { Circle } from "./Circle";
 
 type Props = {
-    teamData: teamDetail;
+    teamData: TeamDetail;
 };
 type DataType = {
     labels: Array<string>;

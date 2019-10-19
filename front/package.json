@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/axios": "^0.14.0",
     "@types/jest": "24.0.19",
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "12.11.1",
@@ -10,6 +11,7 @@
     "@types/react-dom": "16.9.2",
     "@types/react-redux": "^7.1.5",
     "@types/react-router-dom": "^5.1.0",
+    "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
     "jsonwebtoken": "^8.5.1",
