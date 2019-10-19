@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {  teamDetail } from '../types';
-import { Doughnut } from 'react-chartjs-2'
+import { Circle } from "./Circle";
 
 type Props = {
     teamData: teamDetail;
@@ -15,34 +15,12 @@ type DatasetType = {
     backgroundColor : Array<string>;
     hoverBackgroundColor: Array<string>;
 }
-// const data = {
-// 	labels: [
-// 		'Red',
-// 		'Green',
-//         'Yellow',
-// 	],
-// 	datasets: [{
-// 		data: [300, 50, 100],
-		// backgroundColor: [
-		// '#FF6384',
-		// '#36A2EB',
-        // '#FFCE56',
-		// ],
-		// hoverBackgroundColor: [
-		// '#FF6384',
-		// '#36A2EB',
-		// '#FFCE56'
-		// ]
-// 	}]
-// };
 
 const TeamSummary: React.FC<Props> = props => {
-    const data: DataType = {
+    const [data, setData] = useState<DataType>({
         labels:[],
         datasets:[{
             data:[],
-            // backgroundColor: [],
-            // hoverBackgroundColor: []
             backgroundColor: [
                 "#FF6384",
                 "#36A2EB",
@@ -59,16 +37,21 @@ const TeamSummary: React.FC<Props> = props => {
             ]
             }
         ]
-    }
-    props.teamData.teamMember.map(d => {
+    })
+    useEffect(() => {  
+        props.teamData.teamMember.map(d => {
         data.labels.push(d.userName)
         data.datasets[0].data.push(d.userData.weeklyDistance)
-    })
-    
+        })
+
+        data.datasets[0].data.push(props.teamData.teamGoal)
+        data.labels.push("NULL")
+    },[])
+
     return (
         <section onClick={() => console.log("clicked!")}>
             <p>チーム目標: {props.teamData.teamGoal}</p>
-            <Doughnut data={data}/>
+            <Circle name={data.labels} data={data.datasets[0].data}/>
         </section>
     );
 };

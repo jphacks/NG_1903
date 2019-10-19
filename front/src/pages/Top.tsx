@@ -12,7 +12,7 @@ const userData: UserData = {
     "achievementRate": 80
 }
 const teamData: teamDetail = {
-    teamGoal: 100,
+    teamGoal: 200,
     teamMember: [
         {
             userName: "AAA",
@@ -67,6 +67,7 @@ const Index : React.FC = () => {
             </header>
             {isUserLoaded ?  <UserSummary userData={userData} /> :  <div>User Loading</div>}
             {isTeamLoaded ?  <TeamSummary teamData={teamData}  /> : <div>Team Loaded</div>}
+            
         </div>
     )
 }

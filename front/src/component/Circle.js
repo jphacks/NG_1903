@@ -1,5 +1,6 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
+import Chart from 'chart.js'
 import "./styles.css";
 
 export function Circle(props) {

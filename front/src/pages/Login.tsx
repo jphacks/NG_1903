@@ -3,6 +3,7 @@ import  { GoogleLogin, GoogleLogout } from 'react-google-login'
 
 const responseGoogle = (response:any) => {
     console.log(response);
+    
 }
 
 const Login: React.FC = () => {
