@@ -4,7 +4,7 @@ import axios from 'axios';
 import { AppState } from '../store';
 import { UserData, TeamDetail } from '../types';
 import UserCard from '../component/UserCard';
-import TeamSummary from '../component/TeamSummary';
+import TeamCard from '../component/TeamCard';
 import WeeklySummary from '../component/weeklySummary';
 
 const URL = 'https://mock.onsd.now.sh'
@@ -55,13 +55,13 @@ const Index : React.FC = () => {
 
     return (
         <div>
-            <WeeklySummary/>
             <header>
-                <p>{userState.userName? userState.userName: 'Not logged in'}</p>
-                <p>Setting</p>
+                <WeeklySummary/>
             </header>
             {isUserLoading ?  <div>User Loading</div> : <UserCard userData={userData} /> }
-            {isTeamLoading ?  <div>Team Loading</div> : <TeamSummary teamData={teamData}  /> }
+            <p　className="mb-2 text-muted">チームレポート</p>
+            {isTeamLoading ?  <div>Team Loading</div> : <TeamCard teamData={teamData}  /> }
+
         </div>
     )
 }
