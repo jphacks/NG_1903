@@ -1,11 +1,14 @@
 import React,{useState, useEffect} from 'react';
 import { Card } from 'react-bootstrap'
+import * as H from 'history';
+
 import "./css/TeamCard.css"
 import { TeamDetail } from '../types';
 import { Circle } from "./Circle";
 
 type Props = {
     teamData: TeamDetail;
+    history: H.History
 };
 type DataType = {
     labels: Array<string>;
@@ -51,15 +54,17 @@ const TeamCard : React.FC<Props> = (props) => {
     },[])
 
     return (
-        <Card className="mx-auto" style={{ width: '22rem' }}>
-            <Card.Body>
-                <Card.Title>{"目標まであと○○km"}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted text-right">残り○日</Card.Subtitle>
-                <Card.Text className="text-center">
-                    <Circle data={data.datasets[0].data}/>
-                </Card.Text>
-            </Card.Body>
-        </Card>
+        <section onClick={() => props.history.push("/teamDetail")}> 
+            <Card className="mx-auto" style={{ width: '22rem' }}>
+                <Card.Body>
+                    <Card.Title>{"目標まであと○○km"}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted text-right">残り○日</Card.Subtitle>
+                    <Card.Text className="text-center">
+                        <Circle data={data.datasets[0].data}/>
+                    </Card.Text>
+                </Card.Body>
+            </Card>
+        </section>
     )
 }
 

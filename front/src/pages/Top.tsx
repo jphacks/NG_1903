@@ -6,9 +6,14 @@ import { UserData, TeamDetail } from '../types';
 import UserCard from '../component/UserCard';
 import TeamCard from '../component/TeamCard';
 import WeeklySummary from '../component/weeklySummary';
+import { withRouter } from 'react-router';
 
-const URL = 'https://localhost:5000'
-const Index : React.FC = () => {
+import { RouteComponentProps } from 'react-router-dom'
+
+// const URL = 'https://localhost:5000'
+export const URL = 'https://mock.onsd.now.sh'
+
+const Index : React.FC<RouteComponentProps> = props => {
 
     const [isUserLoading, setIsUserLoading] = useState<boolean>(true)
     const [userData, setUserData] = useState<UserData>({rate:0, weeklyDistance:0,totalDistance:0,achievementRate:0})
@@ -54,16 +59,15 @@ const Index : React.FC = () => {
     }, [userState])
 
     return (
-        <div>
+        <section onClick={() => props.history.push("/teamDetail")} > 
             <header>
                 <WeeklySummary/>
             </header>
-            {isUserLoading ?  <div>User Loading</div> : <UserCard userData={userData} /> }
+            {isUserLoading ?  <div>User Loading</div> : <UserCard userData={userData} history={props.history}/> }
             <p　className="mb-2 text-muted">チームレポート</p>
-            {isTeamLoading ?  <div>Team Loading</div> : <TeamCard teamData={teamData}  /> }
-
-        </div>
+            {isTeamLoading ?  <div>Team Loading</div> : <TeamCard teamData={teamData} history={props.history} /> }
+        </section>
     )
 }
 
-export default Index;
+export default withRouter(Index);
