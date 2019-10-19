@@ -5,6 +5,7 @@ import os
 import requests
 import hashlib
 from google.oauth2 import id_token
+from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
 from flask_login import (
@@ -22,14 +23,14 @@ firebase_admin.initialize_app(cred, {
 })
 
 app = Flask(__name__)
+CORS(app)
 
 # tokenの有効時間(秒)
 TOKEN_VALID_TIME = 1.0 * 60.0 * 60.0
 
-try:
-    GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", None)
-except KeyError:
-    GOOGLE_CLIENT_ID = "DEFAULT"
+# GOOGLE_CLIENT_ID
+GOOGLE_CLIENT_ID = 'http://142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com/'
+
 
 
 def token_verified(token, userid):
@@ -50,18 +51,17 @@ def token_verified(token, userid):
 def hello_world():
     return 'Hello World!'
 
-@app.route('/login')
-def login():
-    return "logined"
 
-
-@app.route('/verify_token', methods=["POST"])
+@app.route('/login', methods=["POST"])
 def verify_token():
     if request.method == "POST":
+        print(request.form)
         user_token = request.form["token"]
+        print(user_token)
         try:
             # Specify the CLIENT_ID of the app that accesses the backend:
             idinfo = id_token.verify_oauth2_token(user_token, requests.Request(), GOOGLE_CLIENT_ID)
+
 
             # Or, if multiple clients access the backend server:
             # idinfo = id_token.verify_oauth2_token(token, requests.Request())
@@ -234,7 +234,7 @@ def get_team_info():
             loop_user_weeklyDistance = loop_user_data['weeklyDistance'][weekId]
             loop_user_totalDistance = loop_user_data['totalDistance']
 
-
+            # TODO
 
 
 @app.route('/mile_add', methods=["POST"])
