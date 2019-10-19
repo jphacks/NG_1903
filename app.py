@@ -97,11 +97,12 @@ def verify_token():
             return_token = hashlib.sha256(token_org_str.encode()).hexdigest()
 
             ref = db.reference('/Users')
-            user_ref = ref.child(userName)
+            user_ref = ref.child(userid)
 
             batch_ref = db.reference('/batch')
             batch_data = batch_ref.get()
-            weekId = batch_data['weekId']
+            weekId = batch_data['current_week_id']
+            weekId = str(weekId)
 
             user_ref.update({
                 'apiToken': return_token,
@@ -122,16 +123,36 @@ def verify_token():
                     'before_pull_time': default_push_time
                 })
 
-            weeklyDistance_ref = user_ref.child('weeklyDistance')
-            if weekId not in weeklyDistance_ref.get():
+            if 'weeklyDistance' not in user_ref.get():
+                weeklyDistance_ref = user_ref.child('weeklyDistance')
                 weeklyDistance_ref.update({
-                    weekId : 0
+                    weekId: 0
                 })
+            else:
+                weeklyDistance_ref = user_ref.child('weeklyDistance')
+                if weekId not in weeklyDistance_ref.get():
+                    weeklyDistance_ref.update({
+                        weekId : 0
+                    })
+
+
+            now_week_tames = db.reference('/Teams/' + weekId)
+            new_Team_ref = now_week_tames.push()
+            new_TeamId = new_Team_ref.key
+            # 1人チームを作成
+            new_Team_ref.update({
+                "teamGoal" : 10,
+                "users": {
+                    "1" : {
+                        "userId" : userid
+                    }
+                }
+            })
 
             ret_data = {
                 'userId' : userid,
                 'apiToken' : return_token,
-                'teamID' : "3",
+                'teamID' : new_TeamId,
                 'userName' : userName,
                 'verified' : True
             }
@@ -183,7 +204,7 @@ def get_user_info():
 
         rate_ref =user_ref.child('rate')
 
-        weekId = batch_data['weekId']
+        weekId = batch_data['current_week_id']
 
         rate_data = rate_ref.get()
         rate = rate_data[weekId]
@@ -238,7 +259,7 @@ def get_team_info():
 
         teamId = user_teamId_ref[weekId]
 
-        teams_teamId_ref = db.reference('Teams/' + teamId)
+        teams_teamId_ref = db.reference('Teams/' + weekId + '/' + teamId)
 
         team_data = teams_teamId_ref.get()
 
@@ -329,7 +350,7 @@ def dummy_data_create():
 
         user_ref = db.reference("/Users/" + userId)
         user_ref.update(push_data)
-        team_ref = db.reference("/Teams/" + user_teamId + "/users/")
+        team_ref = db.reference("/Teams/" + weekId + '/' + user_teamId + "/users/")
         team_ref.update({
             "teamGoal": random.randint(100, 200)
         })
