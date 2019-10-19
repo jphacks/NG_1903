@@ -1,6 +1,7 @@
 export type UserState = {
     userId: string;
     userName : string;
+    teamID: string;
 }
 
 export type UserData = {
