@@ -2,6 +2,7 @@ export type UserState = {
     userId: string;
     userName : string;
     teamID: string;
+    apiToken: string;
 }
 
 export type UserData = {
