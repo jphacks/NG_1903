@@ -12,8 +12,6 @@ type Props = {
     history: H.History
 };
 
-
-
 const UserCard : React.FC<Props> = props => {
     const userState = useSelector((state: AppState) => state.userState)
 

@@ -14,12 +14,10 @@ const App: React.FC = () => {
   return (
     <Provider store={Store}>
       <BrowserRouter>
-        <div>
           <Route exact path="/" component={Top} />
           <Route path="/login" component={Login} />
           <Route path="/userDetail" component={UserDetail}/>
           <Route path="/teamDetail" component={TeamDetail} />
-        </div>
       </BrowserRouter>
     </Provider>
   );

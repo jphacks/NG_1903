@@ -59,7 +59,7 @@ const Index : React.FC<RouteComponentProps> = props => {
     }, [userState])
 
     return (
-        <section onClick={() => props.history.push("/teamDetail")} > 
+        <section> 
             <header>
                 <WeeklySummary/>
             </header>
