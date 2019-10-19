@@ -32,8 +32,8 @@ except KeyError:
     GOOGLE_CLIENT_ID = "DEFAULT"
 
 
-def token_verified(token, user_name):
-    ref = db.reference('/' + user_name)
+def token_verified(token, userid):
+    ref = db.reference('/' + userid)
     user_info = ref.get()
     db_token = user_info['token']
     if db_token != token:
@@ -55,7 +55,7 @@ def login():
     return "logined"
 
 
-@app.rouote('/verify_token', methods=["POST"])
+@app.route('/verify_token', methods=["POST"])
 def verify_token():
     if request.method == "POST":
         user_token = request.form["token"]
@@ -108,12 +108,15 @@ def verify_token():
             before_login_time = user_ref.get()["before_login_time"]
 
             user_ref.update({
-                'token': return_token,
+                'apiToken': return_token,
                 'valid_time': valid_time,
                 'user_name': user_name,
                 'email': email,
-                'before_login_time' : now_time
+                'before_login_time' : now_time,
+                'googleToken' : user_token
             })
+
+            # TODO 形式に準拠した時間を返す
 
             ret_data = {
                 'token' : return_token,
@@ -136,23 +139,103 @@ def verify_token():
 @app.route('/user', methods=['POST'])
 def get_user_info():
     ret_data = {
-
-    }
-
-
+                'rate': -99,
+                'weeklyDistance': -99,
+                'totalDistance': -99,
+                'token_verified_flag': False
+            }
 
     if request.method == 'POST':
         token = request.form['apiToken']
         userid = request.form['userId']
-        number = 5555
+
+        if not token_verified(token=token, userid=userid):
+            return ret_data
+
+        user_ref = db.reference('/Users/' + userid)
+
+        user_info = user_ref.get()
+
+        batch_ref = db.reference('/batch')
+        batch_data = batch_ref.get()
+
+        weeklyDistance = user_info['weeklyDistance']
+        totalDistance = user_info['totalDistance']
+
+        rate_ref =user_ref.child('rate')
+
+        weekId = batch_data['weekId']
+
+        rate_data = rate_ref.get()
+        rate = rate_data[weekId]
+
         ret_data = {
-            'rate': number,
-            'weeklyDistance': number,
-            'totalDistance': number,
-            'achievementRate': number # 達成率
+            'rate' : rate,
+            'weeklyDistance': weeklyDistance,
+            'totalDistance': totalDistance,
+            'token_verified_flag': True
         }
 
     return jsonify(ret_data)
+
+
+@app.route('/team', methods=["POST"])
+def get_team_info():
+
+    ret_data = {
+        'teamGoal': -99,
+        'teamMember' : [
+        {
+          'userName': 'dummy',
+          'userData':{
+            'rate': -50,
+            'weeklyDistance': -50,
+            'totalDistance': -50
+            }
+        }
+        ],
+        'token_verified_flag': False
+
+    }
+
+    if request.method == "POST":
+        token = request.form['apiToken']
+        userid = request.form['userId']
+
+        if not token_verified(token=token, userid=userid):
+            return ret_data
+
+        user_ref = db.reference('/Users/' + userid)
+
+        user_info = user_ref.get()
+
+        batch_ref = db.reference('/batch')
+        batch_data = batch_ref.get()
+
+        user_teamId_ref = user_ref.child('teamId')
+
+        weekId = batch_data['weekId']
+
+        teamId = user_teamId_ref[weekId]
+
+        teams_teamId_ref = db.reference('Teams/' + teamId)
+
+        team_data = teams_teamId_ref.get()
+
+        teamGoal = team_data['teamGoal']
+        users = team_data['users']
+        for index in users:
+            loop_user_id = users[index]["userId"]
+
+            loop_user_ref = db.reference('Users/' + loop_user_id)
+            loop_user_data = loop_user_ref.get()
+
+            loop_user_rate = loop_user_data['rate'][weekId]
+            loop_user_weeklyDistance = loop_user_data['weeklyDistance'][weekId]
+            loop_user_totalDistance = loop_user_data['totalDistance']
+
+
+
 
 @app.route('/mile_add', methods=["POST"])
 def user_mile_add():
@@ -161,13 +244,13 @@ def user_mile_add():
         user_data = ref.get()
         if not user_data:
             return "None_Users_Data"
-        mileage = user_data["mileage"]
-        mileage += 100
-        this_week_mileage = user_data["this_week_mileage"]
+        totalDistance = user_data["totalDistance"]
+        totalDistance += 100
+        this_week_mileage = user_data["weeklyDistance"]
         this_week_mileage += 50
 
         ret_data = {
-            "mileage" : mileage
+            "totalDistance" : totalDistance
         }
         ref.update(ret_data)
         return jsonify(ret_data)
@@ -185,7 +268,7 @@ def week_reset():
         user_ref = ref.child(user)
         user_ref.update({
             # 'this_week_goal': 200,
-            'this_week_mileage': 0
+            'weeklyDistance': 0
         })
 
 if __name__ == '__main__':
