@@ -14,7 +14,7 @@ const UserCard : React.FC<Props> = (props) => {
     const userState = useSelector((state: AppState) => state.userState)
 
     return (
-        <Card className="mx-auto" style={{ width: '22rem' }}>
+        <Card className="mx-auto" style={{ width: '22rem'}}>
             <Card.Body>
                 <Card.Title>{userState.userName? userState.userName: 'Not logged in'}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted text-right">RATE:{props.userData.rate}</Card.Subtitle>
