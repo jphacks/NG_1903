@@ -19,7 +19,8 @@ const UserCard : React.FC<Props> = (props) => {
                 <Card.Title>{userState.userName? userState.userName: 'Not logged in'}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">RATE:{props.userData.rate}</Card.Subtitle>
                 <Card.Text>
-                    <b>{props.userData.weeklyDistance}</b>km走りました
+                    <b>{props.userData.weeklyDistance}</b>km走りました <br></br>
+                    累計:{props.userData.totalDistance}km
                 </Card.Text>
             </Card.Body>
         </Card>
