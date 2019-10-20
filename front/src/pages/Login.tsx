@@ -35,9 +35,8 @@ const Login: React.FC = () => {
             <img className="icon"
                 src={Icon}
             />
-            
             <div className="title">
-                N<span className="mini_title">ice</span> R<span className="mini_title">un</span> C<span className="mini_title">lub</span>
+                Nice Run Club
             </div>
             <div className="loginFrame">
                 <GoogleLogin
