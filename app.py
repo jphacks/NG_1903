@@ -35,10 +35,12 @@ GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleuse
 
 
 def token_verified(token, userid):
-    ref = db.reference('/' + userid)
+    ref = db.reference('/Users/' + userid)
     user_info = ref.get()
-    print(user_info)
     db_token = user_info['apiToken']
+    if token[0:7] == "Bearer ":
+        token = token[7:]
+
     if db_token != token:
         return False
 
@@ -231,6 +233,7 @@ def get_user_info(userId):
         rate_ref =user_ref.child('rate')
 
         weekId = batch_data['current_week_id']
+        weekId = str(weekId)
 
         rate_data = rate_ref.get()
         rate = rate_data[weekId]
@@ -249,8 +252,11 @@ def get_user_info(userId):
 
     return jsonify(ret_data)
 
+@app.route('/team',methods=['OPTION'])
+def team_preflight():
+    return "OK"
 
-@app.route('/team/<teamId>', methods=["GET", "POST"])
+@app.route('/team/<teamId>', methods=["GET"])
 def get_team_info(teamId):
 
     ret_data = {
@@ -277,8 +283,8 @@ def get_team_info(teamId):
         token = request.headers.get("Authorization")
         userId = request.headers.get("UserID")
 
-        # if not token_verified(token=token, userid=userId):
-        #     return ret_data
+        if not token_verified(token=token, userid=userId):
+            return ret_data
 
         user_ref = db.reference('/Users/' + userId)
 
@@ -290,7 +296,6 @@ def get_team_info(teamId):
         user_teamId_ref = user_ref.child('teamId')
 
         weekId = batch_data['current_week_id']
-        weekId = 1234567890
         weekId = str(weekId)
         teamId = user_teamId_ref.get()[weekId]
 
@@ -330,8 +335,6 @@ def get_team_info(teamId):
             "teamMember" : team_menber
         }
 
-        print(ret_data)
-
         return jsonify(ret_data)
 
 
@@ -360,6 +363,14 @@ def dummy_data_create():
         apiToken = "apiToken"
         googleToken = "googleToken"
         totalDistance = 0
+        batch_ref = db.reference('/batch')
+        batch_data = batch_ref.get()
+
+        user_teamId_ref = user_ref.child('teamId')
+
+        weekId = batch_data['current_week_id']
+        weekId = str(weekId)
+
         rate = {
             weekId : random.randint(0, 500)
         }
