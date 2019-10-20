@@ -2,4 +2,4 @@ cron:
   - description: "Update rank, rate, team"
     url: /cron
     schedule: every sunday 05:00
-    timezone: JP
+    timezone: Asia/Tokyo
