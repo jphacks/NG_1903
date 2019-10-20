@@ -8,6 +8,7 @@ import { URL } from '../App';
 import { AppState } from '../store';
 import { Button } from 'react-bootstrap';
 import './title.css'
+import Icon from './nice_run_icon.png';
 
 
 const Login: React.FC = () => {
@@ -32,20 +33,23 @@ const Login: React.FC = () => {
     return (
         <div>
             <img className="icon"
-                src="./nice_run_icon.png"
+                src={Icon}
             />
+            
             <div className="title">
                 N<span className="mini_title">ice</span> R<span className="mini_title">un</span> C<span className="mini_title">lub</span>
             </div>
-            <GoogleLogin
-                className="loginButton"
-                // clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
-                clientId="433618952640-37ar21n8s7m5fhn728f23vjap40kou9s.apps.googleusercontent.com" //mock.onsd.now.sh
-                buttonText="Sign in With Google"
-                onSuccess={onSuccess}
-                onFailure={err => console.error(err)}
-                cookiePolicy={'single_host_origin'}
+            <div className="loginFrame">
+                <GoogleLogin
+                    className="loginButton"
+                    // clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
+                    clientId="433618952640-37ar21n8s7m5fhn728f23vjap40kou9s.apps.googleusercontent.com" //mock.onsd.now.sh
+                    buttonText="Sign in With Google"
+                    onSuccess={onSuccess}
+                    onFailure={err => console.error(err)}
+                    cookiePolicy={'single_host_origin'}
             />
+            </div>
         </div>
     )
     

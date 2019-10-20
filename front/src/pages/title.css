@@ -1,9 +1,7 @@
 .icon {
-    position: absolute;
-    width: 298px;
-    height: 298px;
-    left: 161.14px;
-    top: 29px;
+    width: 100%;
+    height: auto;
+    text-align: center;
 }
 
 .title {
@@ -11,7 +9,7 @@
     width: 100%;
     height: 24px;
     left: 0px;
-    top: 500px;
+    top: 400px;
 
     font-family: Roboto;
     font-style: normal;
@@ -28,11 +26,14 @@
     font-size: 24px;
 }
 
-.loginButton {
+.loginFrame {
     position: absolute;
+    top: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+.loginButton {
     width: 354px;
     height: 85px;
-    left: 10px;
-    top: 570px;
-
 }
