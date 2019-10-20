@@ -71,7 +71,7 @@ def verify_token():
 
             # ID token is valid. Get the user's Google Account ID from the decoded token.
             # sub is user primary id
-            userid = idinfo['sub']
+            googleId = idinfo['sub']
 
             email_verified = idinfo['email_verified']
 
@@ -92,12 +92,23 @@ def verify_token():
 
             valid_time = now_time + TOKEN_VALID_TIME
 
-            token_org_str = userName + userid + str(valid_time)
+            token_org_str = userName + googleId + str(valid_time)
 
             return_token = hashlib.sha256(token_org_str.encode()).hexdigest()
 
             ref = db.reference('/Users')
-            user_ref = ref.child(userid)
+            userId = ""
+            snapshot = ref.order_by_child("googleId").equal_to(googleId).get()
+            if not snapshot:
+                user_ref = ref.push()
+                userId = user_ref.key
+            else:
+                if len(snapshot) == 1:
+                    # 普通にやっていればgoogleIdは重複しない
+                    for key in snapshot:
+                        userId = key
+                        user_ref = ref.child(userId)
+
 
             batch_ref = db.reference('/batch')
             batch_data = batch_ref.get()
@@ -109,7 +120,8 @@ def verify_token():
                 'valid_time': valid_time,
                 'userName': userName,
                 'email': email,
-                'googleToken' : user_token
+                'googleToken' : user_token,
+                "googleId" : googleId
             })
 
             if 'totalDistance' not in user_ref.get():
@@ -144,13 +156,22 @@ def verify_token():
                 "teamGoal" : 10,
                 "users": {
                     "1" : {
-                        "userId" : userid
+                        "userId" : userId
                     }
                 }
             })
 
+            user_ref.update({
+                'teamId' : {
+                    weekId : new_TeamId
+                },
+                'rate' : {
+                    weekId : 0
+                }
+            })
+
             ret_data = {
-                'userId' : userid,
+                'userId' : userId,
                 'apiToken' : return_token,
                 'teamID' : new_TeamId,
                 'userName' : userName,
@@ -175,8 +196,8 @@ def verify_token():
             return ret_data
 
 
-@app.route('/user', methods=['POST'])
-def get_user_info():
+@app.route('/user/<userId>', methods=['GET'])
+def get_user_info(userId):
     ret_data = {
                 'rate': -99,
                 'weeklyDistance': -99,
@@ -184,15 +205,17 @@ def get_user_info():
                 'token_verified_flag': False
             }
 
-    if request.method == 'POST':
-        posted_json = json.loads(request.get_data())
-        token = posted_json['apiToken']
-        userid = posted_json['userId']
+    if request.method == 'GET':
+        # posted_json = json.loads(request.get_data())
+        # token = posted_json['apiToken']
+        # userId = posted_json['userId']
 
-        if not token_verified(token=token, userid=userid):
+        token = request.headers.get("Authorization")
+
+        if not token_verified(token=token, userid=userId):
             return ret_data
 
-        user_ref = db.reference('/Users/' + userid)
+        user_ref = db.reference('/Users/' + userId)
 
         user_info = user_ref.get()
 
@@ -219,8 +242,8 @@ def get_user_info():
     return jsonify(ret_data)
 
 
-@app.route('/team', methods=["POST"])
-def get_team_info():
+@app.route('/team/<teamId>', methods=["GET", "POST"])
+def get_team_info(teamId):
 
     ret_data = {
         'teamGoal': -99,
@@ -238,15 +261,18 @@ def get_team_info():
 
     }
 
-    if request.method == "POST":
-        posted_json = json.loads(request.get_data())
-        token = posted_json['apiToken']
-        userid = posted_json['userId']
+    if request.method == "GET":
+        # posted_json = json.loads(request.get_data())
+        # token = posted_json['apiToken']
+        # userid = posted_json['userId']
 
-        if not token_verified(token=token, userid=userid):
+        token = request.headers.get("Authorization")
+        userId = request.headers.get("UserID")
+
+        if not token_verified(token=token, userid=userId):
             return ret_data
 
-        user_ref = db.reference('/Users/' + userid)
+        user_ref = db.reference('/Users/' + userId)
 
         user_info = user_ref.get()
 
@@ -342,8 +368,9 @@ def dummy_data_create():
             "googleToken": googleToken,
             "apiToken" : apiToken,
             "totalDistance" : totalDistance,
-            "rate" : rate,
-            "weeklyDistance" : weeklyDistance,
+            "googleId" : "googleId" + str(index),
+            # "rate" : rate,
+            # "weeklyDistance" : weeklyDistance,
             "teamId" : teamId,
             "before_pull_time" : nowtime_to_rcf3339()
         }
@@ -351,9 +378,9 @@ def dummy_data_create():
         user_ref = db.reference("/Users/" + userId)
         user_ref.update(push_data)
         team_ref = db.reference("/Teams/" + weekId + '/' + user_teamId + "/users/")
-        team_ref.update({
-            "teamGoal": random.randint(100, 200)
-        })
+        # team_ref.update({
+        #     "teamGoal": random.randint(100, 200)
+        # })
         team_ref = team_ref.child(str((index)%4 + 1 ))
         team_ref.update({
             "userId" : userId
@@ -361,6 +388,24 @@ def dummy_data_create():
 
     return "OK"
 
+
+@app.route("/test")
+def test():
+    ref = db.reference('/Users')
+    googleId = "45"
+    snapshot = ref.order_by_child("googleId").equal_to(googleId).get()
+    if not snapshot:
+        user_ref = ref.push()
+        userId = user_ref.key
+    else:
+        if len(snapshot) == 1:
+            # 普通にやっていればgoogleIdは重複しない
+            for key in snapshot:
+                userId = key
+                user_ref = ref.child(userId)
+
+
+    return snapshot
 
 if __name__ == '__main__':
     app.run()
