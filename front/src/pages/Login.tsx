@@ -37,7 +37,8 @@ const Login: React.FC = () => {
                 Nice Run Club
             </div>
             <GoogleLogin
-                clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
+                // clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
+                clientId="433618952640-37ar21n8s7m5fhn728f23vjap40kou9s.apps.googleusercontent.com" //mock.onsd.now.sh
                 buttonText="Sign in With Google"
                 onSuccess={onSuccess}
                 onFailure={err => console.error(err)}
