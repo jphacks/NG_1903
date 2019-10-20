@@ -1,2 +1,4 @@
 venv/
 tapidora-63973-firebase-adminsdk-lzcfe-fb0238ec1f.json
+__pycache__
+.idea/
