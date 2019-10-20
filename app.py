@@ -37,7 +37,7 @@ GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleuse
 def token_verified(token, userid):
     ref = db.reference('/' + userid)
     user_info = ref.get()
-    db_token = user_info['token']
+    db_token = user_info['apiToken']
     if db_token != token:
         return False
 
@@ -195,7 +195,9 @@ def verify_token():
             }
             return ret_data
 
-
+@app.route('/user',methods=['OPTION'])
+def preflight():
+    return "OK"
 @app.route('/user/<userId>', methods=['GET'])
 def get_user_info(userId):
     ret_data = {
@@ -212,8 +214,8 @@ def get_user_info(userId):
 
         token = request.headers.get("Authorization")
 
-        if not token_verified(token=token, userid=userId):
-            return ret_data
+        # if not token_verified(token=token, userid=userId):
+        #     return ret_data
 
         user_ref = db.reference('/Users/' + userId)
 
@@ -222,7 +224,6 @@ def get_user_info(userId):
         batch_ref = db.reference('/batch')
         batch_data = batch_ref.get()
 
-        weeklyDistance = user_info['weeklyDistance']
         totalDistance = user_info['totalDistance']
 
         rate_ref =user_ref.child('rate')
@@ -232,12 +233,17 @@ def get_user_info(userId):
         rate_data = rate_ref.get()
         rate = rate_data[weekId]
 
+        weeklyDistance = user_info['weeklyDistance'][weekId]
+
+
         ret_data = {
             'rate' : rate,
             'weeklyDistance': weeklyDistance,
             'totalDistance': totalDistance,
             'token_verified_flag': True
         }
+        print(ret_data)
+
 
     return jsonify(ret_data)
 
@@ -269,8 +275,8 @@ def get_team_info(teamId):
         token = request.headers.get("Authorization")
         userId = request.headers.get("UserID")
 
-        if not token_verified(token=token, userid=userId):
-            return ret_data
+        # if not token_verified(token=token, userid=userId):
+        #     return ret_data
 
         user_ref = db.reference('/Users/' + userId)
 
@@ -281,9 +287,10 @@ def get_team_info(teamId):
 
         user_teamId_ref = user_ref.child('teamId')
 
-        weekId = batch_data['weekId']
-
-        teamId = user_teamId_ref[weekId]
+        weekId = batch_data['current_week_id']
+        weekId = 1234567890
+        weekId = str(weekId)
+        teamId = user_teamId_ref.get()[weekId]
 
         teams_teamId_ref = db.reference('Teams/' + weekId + '/' + teamId)
 
@@ -292,8 +299,11 @@ def get_team_info(teamId):
         teamGoal = team_data['teamGoal']
         users = team_data['users']
         team_menber = []
+
         for index in users:
-            loop_user_id = users[index]["userId"]
+            if index == None:
+                continue
+            loop_user_id = index["userId"]
 
             loop_user_ref = db.reference('Users/' + loop_user_id)
             loop_user_data = loop_user_ref.get()
@@ -317,6 +327,8 @@ def get_team_info(teamId):
             "teamGoal": teamGoal,
             "teamMember" : team_menber
         }
+
+        print(ret_data)
 
         return jsonify(ret_data)
 
@@ -342,7 +354,6 @@ def dummy_data_create():
     ref = db.reference()
     names = ["Tom", "Ant", "Ken", "Bob", "Rinrin", "Sayo", "Rute", "Rob"]
     import random
-    weekId = "1234567890"
     for index, userName in enumerate(names):
         apiToken = "apiToken"
         googleToken = "googleToken"
@@ -383,6 +394,7 @@ def dummy_data_create():
         # })
         team_ref = team_ref.child(str((index)%4 + 1 ))
         team_ref.update({
+            "teamGoal": 100,
             "userId" : userId
         })
 
