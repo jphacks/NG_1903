@@ -1,3 +1,11 @@
+.icon {
+    position: absolute;
+    width: 298px;
+    height: 298px;
+    left: 161.14px;
+    top: 29px;
+}
+
 .title {
     position: absolute;
     width: 100%;

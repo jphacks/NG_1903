@@ -31,11 +31,11 @@ const Login: React.FC = () => {
     console.log(userState)
     return (
         <div>
-            <div>
-                icon
-            </div>
+            <img className="icon"
+                src="./nice_run_icon.png"
+            />
             <div className="title">
-                N <span className="mini_title">ice</span> R<span className="mini_title">un</span> C<span className="mini_title">lub</span>
+                N<span className="mini_title">ice</span> R<span className="mini_title">un</span> C<span className="mini_title">lub</span>
             </div>
             <GoogleLogin
                 className="loginButton"
