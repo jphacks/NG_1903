@@ -1,0 +1,30 @@
+.userRate{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 24px;
+    /* or 171% */
+
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.weeklyDistance{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 32px;
+    line-height: 30px;
+    /* or 62% */
+
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.totalDistance{
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 24px;
+    /* or 133% */
+}

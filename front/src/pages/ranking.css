@@ -1,0 +1,23 @@
+.rankingNode {
+    width: 343px;
+    height: 69px;
+    left: calc(50% - 343px/2);
+
+    background: #FFFFFF;
+    border: 1px solid #DEDEDE;
+}
+
+.myRanking {
+    width: 100vh;
+    height: 50vh;
+    overflow:auto;
+    padding:10px;
+    line-height:1.5em;
+}
+.topRanking {
+    width: 100vh;
+    height: 30vh;
+    overflow:auto;
+    padding:10px;
+    line-height:1.5em;
+}

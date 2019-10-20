@@ -1,0 +1,21 @@
+.header {
+        height: 8rem;
+}
+
+.weeklyReport {
+    color: rgba(158, 158, 158, 0.87);
+    text-align: center
+}
+
+.main {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 36px;
+    line-height: 24px;
+    /* or 67% */
+
+    text-align: center;
+
+    color: rgba(0, 0, 0, 0.87);
+}
