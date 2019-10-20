@@ -55,6 +55,7 @@ const Index : React.FC<RouteComponentProps> = props => {
         axios.get(URL + '/team/'　+ userState.teamID,
             {headers: {
                 Authorization: `Bearer ${userState.apiToken}`,
+                UserID: userState.userId,
              }}
           ).then(res => {
             const teamData = res.data as TeamDetail
