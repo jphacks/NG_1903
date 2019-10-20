@@ -51,6 +51,7 @@ const TeamCard : React.FC<Props> = (props) => {
 
         data.datasets[0].data.push(props.teamData.teamGoal)
         data.labels.push("NULL")
+        setData(data)
     },[])
 
     return (
@@ -59,9 +60,9 @@ const TeamCard : React.FC<Props> = (props) => {
                 <Card.Body>
                     <Card.Title>{"目標まであと○○km"}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted text-right">残り○日</Card.Subtitle>
-                    <Card.Text className="text-center">
+                    <div className="text-center">
                         <Circle data={data.datasets[0].data}/>
-                    </Card.Text>
+                    </div>
                 </Card.Body>
             </Card>
         </section>
