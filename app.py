@@ -37,6 +37,7 @@ GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleuse
 def token_verified(token, userid):
     ref = db.reference('/' + userid)
     user_info = ref.get()
+    # print(user_info)
     db_token = user_info['apiToken']
     if db_token != token:
         return False
