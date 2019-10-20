@@ -7,6 +7,7 @@ import axios from 'axios';
 import { URL } from '../App';
 import { AppState } from '../store';
 import { Button } from 'react-bootstrap';
+import './title.css'
 
 
 const Login: React.FC = () => {
@@ -18,8 +19,8 @@ const Login: React.FC = () => {
 
     const onSuccess = (response:any) => {
         console.log(response);
-        axios.post(URL + '/login', {token: response.tokenObj.id_token}).then(
-        //axios.get(URL + '/login').then(
+        // axios.post(URL + '/login', {token: response.tokenObj.id_token}).then(
+        axios.get(URL + '/login').then(
             res => {
                 login(res.data as UserState)
             }
@@ -33,10 +34,11 @@ const Login: React.FC = () => {
             <div>
                 icon
             </div>
-            <div>
-                Nice Run Club
+            <div className="title">
+                N <span className="mini_title">ice</span> R<span className="mini_title">un</span> C<span className="mini_title">lub</span>
             </div>
             <GoogleLogin
+                className="loginButton"
                 // clientId='142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleusercontent.com'
                 clientId="433618952640-37ar21n8s7m5fhn728f23vjap40kou9s.apps.googleusercontent.com" //mock.onsd.now.sh
                 buttonText="Sign in With Google"
