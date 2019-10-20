@@ -18,8 +18,8 @@ const UserDetail: React.FC<RouteComponentProps>  = props => {
             <p className="main">~ 10/28</p>
         </Card>
         <section>
-            <span>マイレポート</span>
-            <span>ランキング</span>
+            <span >マイレポート</span>
+            <span onClick={() => props.history.push({pathname: "/ranking", state: {userData: userDate, userState: userState}})}>ランキング</span>
         </section>
         <Card className="mx-auto" style={{ width: '22rem'}}>
                 <Card.Body>
