@@ -44,7 +44,7 @@ Nice Run Clubは、システム上で4人組を作り、1週間チームとし�
 * React
 
 #### デザインツール
-* Figma
+* Figma(https://www.figma.com/file/HULu63KvwyQ9B1EzCw1e5R/JP-HACKS?node-id=0%3A1)
 
 #### デバイス
 * お手持ちのスマートフォン
