@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+
 import { AppState } from '../store';
 import { UserData, TeamDetail } from '../types';
 import UserCard from '../component/UserCard';
@@ -9,6 +10,8 @@ import WeeklySummary from '../component/weeklySummary';
 import { withRouter } from 'react-router';
 
 import { RouteComponentProps } from 'react-router-dom'
+import Indicator from '../component/Indicator';
+
 
 // const URL = 'https://localhost:5000'
 export const URL = 'https://mock.onsd.now.sh'
@@ -68,13 +71,18 @@ const Index : React.FC<RouteComponentProps> = props => {
     }, [userState])
 
     return (
-        <section> 
+        <section style={{
+            backgroundColor: '#E5E5E5',
+            height: '100vh',
+          }}> 
             <header>
                 <WeeklySummary/>
             </header>
-            {isUserLoading ?  <div>User Loading</div> : <UserCard userData={userData} history={props.history}/> }
+            <p className="mb-2 text-muted">ユーザーレポート</p>
+            {isUserLoading ?  <Indicator /> : <UserCard userData={userData} history={props.history}/> }
             <p　className="mb-2 text-muted">チームレポート</p>
-            {isTeamLoading ?  <div>Team Loading</div> : <TeamCard teamData={teamData} history={props.history} /> }
+            {isTeamLoading ?  <Indicator /> : <TeamCard teamData={teamData} history={props.history} /> }
+
         </section>
     )
 }
