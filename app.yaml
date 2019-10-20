@@ -1,5 +1,5 @@
 runtime: python37
-entrypoint: gunicorn -b :$PORT main:app
+entrypoint: gunicorn -b :5000 main:app
 
 runtime_config:
   python_version: 37
