@@ -67,7 +67,7 @@ app.get('/team/:id', function(req, res) {
     teamGoal: 200,
     teamMember: [
         {
-            userName: "AAA",
+            userName: "Taka",
             userData: {
                 "rate": 560,
                 "weeklyDistance": 13,
@@ -76,7 +76,7 @@ app.get('/team/:id', function(req, res) {
             }
         },
         {
-            userName: "BBB",
+            userName: "Tomoki",
             userData: {
                 "rate": 560,
                 "weeklyDistance": 30,
@@ -85,7 +85,7 @@ app.get('/team/:id', function(req, res) {
             }
         },
         {
-            userName: "CCC",
+            userName: "Higuchi",
             userData: {
                 "rate": 560,
                 "weeklyDistance": 50,
@@ -94,7 +94,7 @@ app.get('/team/:id', function(req, res) {
             }
         },
         {
-            userName: "DDD",
+            userName: "Tanaka",
             userData: {
                 "rate": 560,
                 "weeklyDistance": 25.12,
