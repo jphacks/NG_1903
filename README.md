@@ -1,6 +1,6 @@
 # Nice Run Club
 
-[![Nice Run Club](image.png)](https://youtu.be/kUWvSjgLp5s)
+[![Nice Run Club](./front/src/pages/nice_run_icon.png)](https://youtu.be/kUWvSjgLp5s)
 
 ## 製品概要
 ### ランニング Tech
@@ -39,6 +39,9 @@ Nice Run Clubは、システム上で4人組を作り、1週間チームとし�
 * Python(Flask)
 * Firebase
 * React
+
+#### デザインツール
+* Figma
 
 #### デバイス
 * お手持ちのスマートフォン
