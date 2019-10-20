@@ -1,6 +1,6 @@
 # Nice Run Club
 
-[![Product Name](image.png)](https://www.youtube.com/watch?v=G5rULR53uMk)
+[![Nice Run Club](image.png)](https://youtu.be/kUWvSjgLp5s)
 
 ## 製品概要
 ### ランニング Tech
