@@ -9,12 +9,12 @@ import { AppState } from '../store';
 import { Button } from 'react-bootstrap';
 import './title.css'
 import Icon from './nice_run_icon.png';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 
-const Login: React.FC = () => {
+const Login: React.FC<RouteComponentProps> = props => {
     const dispatch = useDispatch()
     const login = (data: UserState) => dispatch(loginCreator(data))
-    const logout = () => dispatch(initLoginCreator())
     const userState = useSelector((state: AppState) => state.userState)
 
 
@@ -24,8 +24,12 @@ const Login: React.FC = () => {
         axios.get(URL + '/login').then(
             res => {
                 login(res.data as UserState)
+                props.history.push("/")
             }
-        )
+        ).then(() => {
+            console.log("success")
+
+        })
     }
 
     console.log("login")
@@ -55,4 +59,4 @@ const Login: React.FC = () => {
     
 }
 
-export default Login
+export default withRouter(Login)
