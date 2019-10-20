@@ -28,11 +28,20 @@ def update_rate(current_week_id, next_week_id):
     users = users_ref.get()
     for user_id in users:
         user = users[str(user_id)]
-        old_rate = user['rate'][str(current_week_id)]
+
+        # rateがない場合の対応
+        if 'rate' in user:
+            if str(current_week_id) in user['rate']:
+                old_rate = user['rate'][str(current_week_id)]
+            else:
+                old_rate = 0
+        else:
+            old_rate = 0
+
         ran_distance = user['weeklyDistance'][str(current_week_id)]
 
         team_id = user['teamId'][str(current_week_id)]
-        team = teams[str(team_id)]
+        team = teams[str(current_week_id)][str(team_id)]
         team_goal_distance = float(team['teamGoal'])
 
         team_members = team['users']

@@ -33,7 +33,7 @@ def main():
 
     # week_idの更新
     updates = {}
-    updates['/current_week_id'] = current_week_id
+    updates['/current_week_id'] = next_week_id
     batch_ref.update(updates)
 
     # ロック状態を解除

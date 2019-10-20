@@ -35,40 +35,46 @@ def update_team(current_week_id, next_week_id):
     ranks = ranks_ref.get()
     ranks = ranks[next_week_id]
     ranks = [x for x in ranks if x is not None]  # 謎None対策
+    ind = 0
+    _ranks = {}
+    for rank in ranks:
+        _ranks[ind] = ranks[ind]
+        ind += 1
 
-    num_full_member_block = len(ranks) / BLOCK_SIZE
+    num_full_member_block = len(_ranks) / BLOCK_SIZE
     for i in range(int(num_full_member_block)):
         tmp = {}
         # ブロックサイズのユーザを取り出す
         for j in range(BLOCK_SIZE):
-            index = i * int(num_full_member_block) + j + 1
-            tmp[index] = ranks[index]
+            index = i * int(num_full_member_block) + j
+            tmp[index] = _ranks[index]
 
         # チームをつくる
         for j in range(int(BLOCK_SIZE / NUM_TEAM_MEMBER)):
             team_members_keys = random.sample(list(tmp.keys()), NUM_TEAM_MEMBER)
             team_members_ids = []
             for key in team_members_keys:
-                team_members_ids.append(ranks[key]['user_id'])
+                team_members_ids.append(_ranks[key]['user_id'])
             tmpi = sorted(team_members_keys, reverse=True)
             for key in tmpi:
                 del tmp[key]
-                del ranks[key]
+                del _ranks[key]
             create_team(new_team_id=str(uuid.uuid4()), current_week_id=current_week_id, next_week_id=next_week_id, arr_members_id=team_members_ids)
     # len(ranks) <= NUM_TEAM_MEMBERなときは、ブロック関係なく組んでしまう
     if len(ranks) <= NUM_TEAM_MEMBER:
-        team_members_keys = random.sample(list(ranks.keys()), NUM_TEAM_MEMBER)
+        team_members_keys = random.sample(list(_ranks.keys), NUM_TEAM_MEMBER)
         team_members_ids = []
+        for key in team_members_keys:
+            team_members_ids.append(_ranks[key]['user_id'])
         tmpi = sorted(team_members_keys, reverse=True)
         for key in tmpi:
-            team_members_ids.append(ranks[key]['user_id'])
             del ranks[key]
         create_team(new_team_id=str(uuid.uuid4()), current_week_id=current_week_id, next_week_id=next_week_id, arr_members_id=team_members_ids)
     # 残り
-    team_members_keys = list(ranks.keys())
+    team_members_keys = list(_ranks.keys())
     team_members_ids = []
     tmpi = sorted(team_members_keys, reverse=True)
     for key in tmpi:
-        team_members_ids.append(ranks[key]['user_id'])
-        del ranks[key]
+        team_members_ids.append(_ranks[key]['user_id'])
+        del _ranks[key]
     create_team(new_team_id=str(uuid.uuid4()), current_week_id=current_week_id, next_week_id=next_week_id, arr_members_id=team_members_ids)
