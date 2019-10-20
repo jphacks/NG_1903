@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom'
 import "./arrow.css"
 
 const TeamDetailPage: React.FC<RouteComponentProps>  = props => {
-    console.log(props.location.state.TeamDetail)
+    console.log(props.location.state.teamDetail)
     return (
         <div className="arrow" onClick={() => props.history.push("/")} />
     )

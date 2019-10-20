@@ -39,9 +39,9 @@ const Index : React.FC<RouteComponentProps> = props => {
     useEffect(() => {
         console.log(userState.userId)
        axios.get(URL + '/user/' + userState.userId,{
-        headers: {
-          Authorization: `Bearer ${userState.apiToken}`,
-        }
+        // headers: {
+        //   Authorization: `Bearer ${userState.apiToken}`,
+        // }
       }).then(res => {
            const userData = res.data as UserData
            setUserData(userData)
@@ -53,10 +53,10 @@ const Index : React.FC<RouteComponentProps> = props => {
     useEffect( () => {
         console.log(userState.teamID)
         axios.get(URL + '/team/'　+ userState.teamID,
-            {headers: {
-                Authorization: `Bearer ${userState.apiToken}`,
-                UserID: userState.userId,
-             }}
+            // {headers: {
+            //     Authorization: `Bearer ${userState.apiToken}`,
+            //     UserID: userState.userId,
+            //  }}
           ).then(res => {
             const teamData = res.data as TeamDetail
             setTeamData(teamData)
