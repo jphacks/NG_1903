@@ -3,7 +3,7 @@
 [![Nice Run Club](./front/src/pages/nice_run_icon.png)](https://youtu.be/kUWvSjgLp5s)
 
 ## 製品概要
-### ランニング Tech
+### ランニング x Tech
 
 ### 背景（製品開発のきっかけ、課題等）
 運動不足を感じ、ランニングを始めるものの、モチベーションを保ち続けるのは難しく、習慣化するのは難しい。  
