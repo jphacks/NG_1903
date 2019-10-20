@@ -58,8 +58,8 @@ const TeamCard : React.FC<Props> = (props) => {
         <section onClick={() => props.history.push({pathname: "/teamDetail", state: {teamDetail: props.teamData}})}> 
             <Card className="mx-auto" style={{ width: '22rem' }}>
                 <Card.Body>
-                    <Card.Title>{"目標まであと○○km"}</Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted text-right">残り○日</Card.Subtitle>
+                    <Card.Title>{"目標まであと25km"}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted text-right">残り1日</Card.Subtitle>
                     <div className="text-center">
                         <Circle data={data.datasets[0].data}/>
                     </div>
