@@ -15,6 +15,7 @@
     "@types/react-redux": "^7.1.5",
     "@types/react-router-dom": "^5.1.0",
     "@types/styled-components": "^4.1.19",
+    "apexcharts": "^3.10.0",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "chart.js": "^2.8.0",
