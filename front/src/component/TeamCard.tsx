@@ -55,7 +55,7 @@ const TeamCard : React.FC<Props> = (props) => {
     },[])
 
     return (
-        <section onClick={() => props.history.push("/teamDetail")}> 
+        <section onClick={() => props.history.push({pathname: "/teamDetail", state: {teamDetail: props.teamData}})}> 
             <Card className="mx-auto" style={{ width: '22rem' }}>
                 <Card.Body>
                     <Card.Title>{"目標まであと○○km"}</Card.Title>

@@ -3,7 +3,7 @@ import {Card} from 'react-bootstrap'
 import { useSelector } from 'react-redux';
 import * as H from 'history';
 
-import { UserData } from "../types";
+import { UserData } from '../types';
 import { AppState } from '../store';
 import "./css/UserCard.css"
 
@@ -16,7 +16,7 @@ const UserCard : React.FC<Props> = props => {
     const userState = useSelector((state: AppState) => state.userState)
 
     return (
-        <section onClick={() => props.history.push("/userDetail")}>
+        <section onClick={() => props.history.push({pathname: "/userDetail", state: {userData: props.userData}})}>
             <Card className="mx-auto" style={{ width: '22rem'}}>
                 <Card.Body>
                     <Card.Title>{userState.userName? userState.userName: 'Not logged in'}</Card.Title>
