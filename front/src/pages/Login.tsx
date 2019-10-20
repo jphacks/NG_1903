@@ -19,7 +19,7 @@ const Login: React.FC = () => {
 
     const onSuccess = (response:any) => {
         console.log(response);
-        // axios.post(URL + '/login', {token: response.tokenObj.id_token}).then(
+        //axios.post(URL + '/login', {token: response.tokenObj.id_token}).then(
         axios.get(URL + '/login').then(
             res => {
                 login(res.data as UserState)
