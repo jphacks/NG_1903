@@ -8,7 +8,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import UserDetail from "./pages/UserDetail";
 import TeamDetail  from './pages/TeamDetailPage';
 
-export const URL = 'http://localhost:5000'
+//export const URL = 'http://localhost:5000'
+export const URL =　'https://mock.onsd.now.sh'
 
 const App: React.FC = () => {
   return (
