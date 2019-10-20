@@ -37,7 +37,7 @@ GOOGLE_CLIENT_ID = '142703424738-kkqmrm6eejec9hnkdglr7npotj1ijqr4.apps.googleuse
 def token_verified(token, userid):
     ref = db.reference('/' + userid)
     user_info = ref.get()
-    # print(user_info)
+    print(user_info)
     db_token = user_info['apiToken']
     if db_token != token:
         return False
@@ -199,6 +199,7 @@ def verify_token():
 @app.route('/user',methods=['OPTION'])
 def preflight():
     return "OK"
+
 @app.route('/user/<userId>', methods=['GET'])
 def get_user_info(userId):
     ret_data = {
@@ -215,8 +216,8 @@ def get_user_info(userId):
 
         token = request.headers.get("Authorization")
 
-        # if not token_verified(token=token, userid=userId):
-        #     return ret_data
+        if not token_verified(token=token, userid=userId):
+            return ret_data
 
         user_ref = db.reference('/Users/' + userId)
 
