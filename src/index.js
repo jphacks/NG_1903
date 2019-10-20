@@ -1,14 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Circle } from "./Circle";
+import { Gage } from "./Gage";
+
 import "./styles.css";
 
 function App() {
   return (
     <div className="App">
-      <Circle
-        name={["koki", "koki", "koki", "koki", "target"]}
-        data={[300, 300, 500, 1100, 2000]}
+      <Gage
+        name={["koki", "ikok", "kiko", "okik"]}
+        data={[[130, 200], [130, 100], [20, 25], [200, 190]]}
       />
     </div>
   );
