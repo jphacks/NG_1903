@@ -18,6 +18,7 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 import uuid
+import urllib
 
 from batch import update_rate, update_rank, update_team
 
@@ -353,7 +354,7 @@ def push_data_time_update(userId):
 
 # 今の所タイムゾーンは全て日本
 def nowtime_to_rcf3339():
-    dt = datetime.datetime.now(tz=pytz.timezone('Japan'))
+    dt = datetime.datetime.now(tz=pytz.timezone('US/Pacific'))
     ret_str = dt.strftime('%Y/%m/%dT%H:%M:%S%z')
     return ret_str
 
@@ -435,6 +436,96 @@ def test():
 
 
     return snapshot
+
+
+@app.route('/pull/google-fit')
+def pull_google_fit_data():
+    import requests
+    # todo: アクセストークン失効時の処理
+
+    # token検証
+    # token = request.headers.get("Authorization")
+    user_id = request.headers.get("UserID")
+    # if not token_verified(token=token, userid=user_id):
+    #     return "ng"
+
+
+    # todo: remove
+    # user_id = 'b3cd90b170e623ff13c227330f5a3e0de0d3148801119ebcc4472b9e099dca36'
+    # google_access_token = ''
+    # user_ref = db.reference('/Users/'+user_id)
+    # user_info = user_ref.get()
+
+    user_ref = db.reference('/Users/' + user_id)
+    user_info = user_ref.get()
+    google_access_token = user_info['googleToken']
+
+    if 'before_pull_time' in user_info:
+        before_pull_time = user_info['before_pull_time']
+        # before_pull_time = '2018-12-31T23:59:59-08:00'
+    else:
+        before_pull_time = '2018-12-31T23:59:59-08:00'
+    latest_pull_time = nowtime_to_rcf3339()
+
+    push_data_time_update(user_id)
+    res = requests.get(
+        'https://www.googleapis.com/fitness/v1/users/me/sessions',
+        params={
+            'startTime': before_pull_time,
+        },
+        headers={
+            'Authorization': 'Bearer ' + google_access_token
+        }
+    )
+    all_sessions = json.loads(res.text)['session']
+    running_sessions = []
+    for sessions in all_sessions:
+        if sessions['activityType'] == 8 or sessions['activityType'] == 57 or sessions['activityType'] == 58:
+            running_sessions.append(sessions)
+    pulled_running_session = running_sessions[0]  # todo
+    session_start_time_millis = pulled_running_session['startTimeMillis']
+    session_end_time_millis = pulled_running_session['endTimeMillis']
+
+    url = 'https://www.googleapis.com/fitness/v1/users/me/dataset:aggregate'
+    headers = {
+        'Authorization': 'Bearer ' + google_access_token
+    }
+    post_body = {
+        "aggregateBy": [{
+            "dataTypeName": "com.google.distance.delta",
+            "dataSourceId": "derived:com.google.distance.delta:com.google.android.gms:merge_distance_delta"
+        }],
+        "startTimeMillis": session_start_time_millis,
+        "endTimeMillis": session_end_time_millis
+    }
+    session_dataset = json.loads(requests.post(url, headers=headers, json=post_body).text)['bucket'][0]['dataset'][0]
+    ran_distance_km = float(session_dataset['point'][0]['value'][0]['fpVal'])/1000
+
+    batch_ref = db.reference('/batch')
+    batch = batch_ref.get()
+    current_week_id = batch['current_week_id']
+
+    current_user_weekly_distance = float(0)
+    if 'weeklyDistance' in user_info:
+        if current_week_id in user_info['weeklyDistance']:
+            current_user_weekly_distance = float(user_info['weeklyDistance'][current_week_id])
+
+    user_weekly_distance = current_user_weekly_distance + ran_distance_km
+    ref = user_ref.child('weeklyDistance')
+    ref.update({
+        current_week_id: user_weekly_distance
+    })
+
+    current_user_total_distance = 0
+    if 'totalDistance' in user_info:
+        current_user_total_distance = float(user_info['totalDistance'])
+
+    user_total_distance = current_user_total_distance + ran_distance_km
+    user_ref.update({
+        'totalDistance': user_total_distance
+    })
+
+    return {"status": "ok"}
 
 
 @app.route("/cron")
