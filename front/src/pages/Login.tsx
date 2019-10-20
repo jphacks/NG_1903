@@ -35,7 +35,10 @@ const Login: React.FC<RouteComponentProps> = props => {
     console.log("login")
     console.log(userState)
     return (
-        <div>
+        <div style={{
+            backgroundColor: '#E5E5E5',
+            height: '100vh',
+          }}>
             <img className="icon"
                 src={Icon}
             />
