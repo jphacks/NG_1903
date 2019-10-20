@@ -338,6 +338,7 @@ def get_team_info(teamId):
             "teamMember" : team_menber
         }
 
+
         return jsonify(ret_data)
 
 
